@@ -2,9 +2,11 @@ pipeline {
     agent any
     stages{
         stage('run the app'){
-            sh "mvn package"
-            sh "mvn clean install"
-            sh "mvn spring-boot:run"
+            steps {
+                sh "mvn package"
+                sh "mvn clean install"
+                sh "mvn spring-boot:run"
+            }
         }
     }
 }
