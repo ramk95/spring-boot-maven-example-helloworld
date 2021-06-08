@@ -1,21 +1,22 @@
 pipeline {
     agent any
     stages{
-       stage('build the app'){
+        stage('build the app'){
             steps {
                 sh "docker build -t build-${BUILD_NUMBER} ."
             }
         }
 
         stage('tagging the image'){
-            //sh "cd spring-helloworld"
-            sh "git tag ${BUILD_NUMBER}"
-            sh "git push origin build-${BUILD_NUMBER}"
+            steps {
+                sh "git tag ${BUILD_NUMBER}"
+                sh "git push origin build-${BUILD_NUMBER}"
+            }
         }
 
         stage ('clean up dangling images'){
             steps{
-                sh "docker rmi $(docker images -q -f dangling=true)"
+                sh "docker rmi /$(docker images -q -f dangling=true)"
             }
         }
     }
