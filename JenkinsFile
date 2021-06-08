@@ -9,8 +9,10 @@ pipeline {
 
         stage('tagging the image'){
             steps {
-                sh "git tag build-${BUILD_NUMBER}"
-                sh "git push origin build-${BUILD_NUMBER}"
+                withCredentials(github_id-with-token){
+                    sh "git tag build-${BUILD_NUMBER}"
+                    sh "git push origin build-${BUILD_NUMBER}"
+                }
             }
         }
 
