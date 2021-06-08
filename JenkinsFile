@@ -16,7 +16,7 @@ pipeline {
 
         stage ('clean up dangling images'){
             steps{
-                sh "docker rmi ${docker images -q -f dangling=true}"
+                sh "docker system prune --all"
             }
         }
     }
