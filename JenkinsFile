@@ -15,7 +15,7 @@ pipeline {
                     sh('''
                         git config user.name 'jenkins_user'
                         git config user.email 'ramakrishnan.h.1995@gmail.com'
-                        git tag \$GIT_TAG"
+                        git tag \$GIT_TAG
                     ''')
                 
                     sshagent(['my-ssh-credentials-id']) {
