@@ -13,7 +13,7 @@ pipeline {
                     GIT_TAG = "build-$BUILD_NUMBER"
                 }
                 steps {
-                    sshagent(credentials: ['github-ssh-key']) {
+                withCredentials([usernamePassword(credentialsId: 'github_id-with-token', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                         sh('''
                         git config user.name 'jenkins_user'
                         git config user.email 'ramakrishnan.h.1995@gmail.com'
