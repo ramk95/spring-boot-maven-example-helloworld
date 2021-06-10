@@ -4,13 +4,13 @@ pipeline {
         stage('build the app'){
             steps {
                 sh "docker build -t build-${BUILD_NUMBER} ."
+                echo "$BRANCH_NAME"
             }
         }
 
         stage("Tag and Push") {
                 environment { 
                     GIT_TAG = "build-$BUILD_NUMBER"
-                    echo "$BRANCH_NAME"
                 }
                 steps {
                     sshagent(credentials: ['github-ssh-key']) {
