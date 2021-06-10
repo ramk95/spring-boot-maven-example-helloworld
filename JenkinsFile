@@ -8,8 +8,9 @@ pipeline {
         }
 
         stage("Tag and Push") {
-            environment { 
-                GIT_TAG = "build-$BUILD_NUMBER"
+                environment { 
+                    GIT_TAG = "build-$BUILD_NUMBER"
+                }
                 steps {
                     sh('''
                         git config user.name 'jenkins_user'
@@ -26,7 +27,6 @@ pipeline {
                             """)
                     }
                 }
-            }
         }
 
         stage ('clean up dangling images'){
