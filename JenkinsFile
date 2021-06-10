@@ -10,18 +10,17 @@ pipeline {
         stage("Tag and Push") {
                 environment { 
                     GIT_TAG = "build-$BUILD_NUMBER"
+                    echo "$BRANCH_NAME"
                 }
                 steps {
-                    sh('''
+                    sshagent(credentials: ['github-ssh-key']) {
+                        sh('''
                         git config user.name 'jenkins_user'
                         git config user.email 'ramakrishnan.h.1995@gmail.com'
-                        git config hub.protocol https
+                        git config url.git@github.com
                         git tag \$GIT_TAG
-                    ''')
-                
-                    sshagent(credentials: ['github-ssh-key']) {
-                        echo '$BRANCH_NAME'
                         sh "git push origin $GIT_TAG"
+                        ''')
                     }
                 }
         }
