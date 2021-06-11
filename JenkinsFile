@@ -20,6 +20,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'github_id-with-token', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     sh "git push origin $BRANCH_NAME --tags"
                 }
+             }
           }
 
         stage('docker image build'){
