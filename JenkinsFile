@@ -1,31 +1,36 @@
 pipeline {
     agent any
-    stages{
-        stage('build the app'){
+    stages {
+        environment { 
+                    GIT_TAG = "build-$BUILD_NUMBER"
+                }
+        stage('build'){
+            steps{
+                sh "mvn clean"
+                sh "mvn package"
+            }
+        }
+        stage('git config'){
             steps {
-                sh "docker build -t build-${BUILD_NUMBER} ."
-                echo "$BRANCH_NAME"
+                sh 'git config user.name "jenkins_user"'
+                sh 'git config user.email "ramakrishnan.h.1995@gmail.com"'
+                sh 'git add .'
+                sh "git commit -m commit-$GIT_TAG"
+                sh "git tag $GIT_TAG"
             }
         }
 
-        stage("Tag and Push") {
-                environment { 
-                    GIT_TAG = "build-$BUILD_NUMBER"
-                }
-                steps {
+        stage('push') {
+            steps{
                 withCredentials([usernamePassword(credentialsId: 'github_id-with-token', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        sh "git config user.name 'jenkins_user'"
-                        sh "git config user.email 'ramakrishnan.h.1995@gmail.com'"
-                        sh "git config url.git@github.com"
-                        sh "git tag \$GIT_TAG"
-                        sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@<REPO> --tags"
-                    }
+                    sh 'git push https://${GIT_USERNAME}:${GIT_PASSWORD}@<REPO> --tags'
                 }
+            }
         }
 
-        stage ('clean up dangling images'){
+        stage('docker image build'){
             steps{
-                sh "docker system prune --all -f"
+                sh "docker build -t build-${BUILD_NUMBER} ."
             }
         }
     }
