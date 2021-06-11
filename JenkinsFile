@@ -9,16 +9,17 @@ pipeline {
         }
         stage('git config'){
             environment { 
-                    GIT_TAG = "build-$BUILD_NUMBER"
+                GIT_TAG = "build-$BUILD_NUMBER"
+                GIT_AUTH = credentials('github_id-with-token') 
                 }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'github_id-with-token', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     sh 'git config user.name "jenkins_user"'
                     sh 'git config user.email "ramakrishnan.h.1995@gmail.com"'
                     sh 'git add .'
                     sh "git commit -m commit-$GIT_TAG"
                     sh "git tag $GIT_TAG"
-                    sh "git push origin HEAD:$TARGET_BRANCH $GIT_TAG"
+                    git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
+                    sh "git push origin HEAD:$BRANCH_NAME $GIT_TAG"
                 }
              }
           }
