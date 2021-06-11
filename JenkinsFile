@@ -21,7 +21,6 @@ pipeline {
                     git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"
                     sh "git push origin HEAD:$BRANCH_NAME $GIT_TAG"
                 }
-             }
           }
 
         stage('docker image build'){
