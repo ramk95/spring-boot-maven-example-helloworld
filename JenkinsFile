@@ -18,7 +18,7 @@ pipeline {
                 sh "git commit -m commit-$GIT_TAG"
                 sh "git tag $GIT_TAG"
                 withCredentials([usernamePassword(credentialsId: 'github_id-with-token', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    sh "git push HEAD:$BRANCH_NAME $GIT_TAG"
+                    sh "git push origin HEAD:$BRANCH_NAME $GIT_TAG"
                 }
              }
           }
