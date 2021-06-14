@@ -23,9 +23,14 @@ pipeline {
                 }
           }
 
-        stage('docker image build'){
+         stage('Deploy Image') {
             steps{
-                sh "docker build -t build-${BUILD_NUMBER} ."
+                script {
+                    docker.withRegistry('https://956652034129.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:aws-creds') {
+                            def myImage = docker.build('dockerimages')
+                            myImage.push("build-$BUILD_NUMBER")
+                     }
+                }
             }
         }
     }
