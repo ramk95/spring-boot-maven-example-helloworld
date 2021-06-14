@@ -14,7 +14,7 @@ pipeline {
                 }
             steps {
                     sh 'git config user.name "jenkins_user"'
-                    sh 'git config user.email "ramakrishnan.h.1995@gmail.com"'
+                    sh 'git config user.email "ernest.thornhill.corp@gmail.com"'
                     sh 'git add .'
                     sh "git commit -m commit-$GIT_TAG"
                     sh "git tag $GIT_TAG"
