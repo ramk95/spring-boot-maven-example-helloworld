@@ -1,11 +1,36 @@
 pipeline {
     agent any
-    stages{
-        stage('run the app'){
-            steps {
+    stages {
+        stage('build'){
+            steps{
+                sh "mvn clean"
                 sh "mvn package"
-                sh "mvn clean install"
-                sh "mvn spring-boot:run"
+            }
+        }
+        stage('git config'){
+            environment { 
+                GIT_TAG = "build-$BUILD_NUMBER"
+                GIT_AUTH = credentials('github_id-with-token') 
+                }
+            steps {
+                    sh 'git config user.name "jenkins_user"'
+                    sh 'git config user.email "ernest.thornhill.corp@gmail.com"'
+                    sh 'git add .'
+                    sh "git commit -m commit-$GIT_TAG"
+                    sh "git tag $GIT_TAG"
+                    sh 'git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"'
+                    sh "git push origin HEAD:$BRANCH_NAME $GIT_TAG"
+                }
+          }
+
+         stage('Deploy Image') {
+            steps{
+                script {
+                    docker.withRegistry('https://956652034129.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:aws-creds') {
+                            def myImage = docker.build('dockerimages')
+                            myImage.push("build-$BUILD_NUMBER")
+                     }
+                }
             }
         }
     }
