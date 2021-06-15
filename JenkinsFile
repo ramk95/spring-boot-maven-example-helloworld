@@ -1,3 +1,4 @@
+@Library('slack-shared-library')_
 pipeline {
     agent any
     stages {
@@ -31,6 +32,14 @@ pipeline {
                             myImage.push("build-$BUILD_NUMBER")
                      }
                 }
+            }
+        }
+    }
+    post {
+        always {
+            script{
+                slackNotifier(currentBuild.currentResult)
+                cleanWs()
             }
         }
     }
